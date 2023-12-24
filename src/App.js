@@ -4,8 +4,9 @@ import Item from "./components/Item";
 import FavItem from "./components/FavItem";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { fetchAnother } from "./actions";
+import { addFav, fetchAnother, getFavsFromLocalStorage } from "./actions";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 export default function App() {
   const {favs,current,loading,error}=useSelector((state)=>state)
   // const loading = false;
@@ -14,6 +15,8 @@ export default function App() {
  const dispatch=useDispatch();
 
   function addToFavs() {
+    dispatch(addFav(current))
+    dispatch(fetchAnother())
   }
 
    const newData=()=>{
@@ -21,6 +24,7 @@ export default function App() {
     }
 
   useEffect(()=>{
+    dispatch(getFavsFromLocalStorage())
     newData()
   },[])
 
@@ -74,13 +78,14 @@ export default function App() {
           <div className="flex flex-col gap-3">
             {favs.length > 0
               ? favs.map((item) => (
-                <FavItem key={item.key} id={item.key} title={item.activity} />
+                <FavItem key={item.id} id={item.id} title={item.activity} />
               ))
               : <div className="bg-white p-6 text-center shadow-md">Henüz bir favoriniz yok</div>
             }
           </div>
         </Route>
       </Switch>
+      <ToastContainer/>
     </div>
   );
 }
