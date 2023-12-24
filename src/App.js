@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Route, NavLink } from "react-router-dom";
 import Item from "./components/Item";
 import FavItem from "./components/FavItem";
-
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { fetchAnother } from "./actions";
+import axios from "axios";
 export default function App() {
-  const loading = false;
-  const current = null;
-  const favs = [];
+  const {favs,current,loading,error}=useSelector((state)=>state)
+  // const loading = false;
+  // const current = null;
+  // const favs = [];
+ const dispatch=useDispatch();
 
   function addToFavs() {
   }
+
+   const newData=()=>{
+    return dispatch(fetchAnother())
+    }
+
+  useEffect(()=>{
+    newData()
+  },[])
+
 
 
   return (
@@ -35,11 +49,15 @@ export default function App() {
       <Switch>
         <Route exact path="/">
           {loading && <div className="bg-white p-6 text-center shadow-md">YÜKLENİYOR</div>}
+
+          {error && <div className="bg-white p-6 text-center shadow-md">HATA:{error}</div>}
+
           {current && <Item data={current} />}
 
           <div className="flex gap-3 justify-end py-3">
             <button
-              className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
+              className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500" 
+              onClick={newData}
             >
               Başka bir tane
             </button>
